@@ -1,0 +1,72 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+#include <iomanip>
+using namespace std;
+void getInputs(double &balance, double &annualTaxRate, int &months);
+double getValidAmount(string prompt);
+void processTransactions(int months, double balance, double annualTaxRate);
+int main() {
+    double balance, annualTaxRate;
+    int months;
+
+    getInputs(balance, annualTaxRate, months);   
+    processTransactions(months, balance, annualTaxRate); 
+
+    return 0;
+}
+void getInputs(double &balance, double &annualTaxRate, int &months) {
+    cout << "Enter initial account balance: ";
+    cin >> balance;
+
+    cout << "Enter annual tax rate (%): ";
+    cin >> annualTaxRate;
+
+    cout << "Enter total number of months: ";
+    cin >> months;
+}
+
+double getValidAmount(string prompt) {
+    double amount;
+    do {
+        cout << prompt;
+        cin >> amount;
+        if (amount < 0) {
+            cout << "Invalid! Amount cannot be negative.\n";
+        }
+    } while (amount < 0);
+    return amount;
+}
+
+void processTransactions(int months, double balance, double annualTaxRate) {
+    
+    double deposits[100], withdrawals[100], taxes[100];  
+
+    double totalDeposit = 0, totalWithdrawal = 0, totalTax = 0;
+    double monthlyRate = annualTaxRate / 12 / 100;
+
+    for (int i = 0; i < months; i++) {
+        cout << "\n--- Month " << (i + 1) << " ---\n";
+
+        deposits[i] = getValidAmount("Enter deposit amount: ");
+        balance += deposits[i];
+        totalDeposit += deposits[i];
+
+        withdrawals[i] = getValidAmount("Enter withdrawal amount: ");
+        balance -= withdrawals[i];
+        totalWithdrawal += withdrawals[i];
+        
+        taxes[i] = balance * monthlyRate;
+        balance -= taxes[i];
+        totalTax += taxes[i];
+        if (balance < 0) {
+            cout << "Warning! Balance is negative.\n";
+        }
+    }
+    cout << "\n====== Account Summary ======\n";
+    cout << fixed << setprecision(2);
+    cout << "Final Balance: Rs " << balance << "\n";
+    cout << "Total Deposited: Rs " << totalDeposit << "\n";
+    cout << "Total Withdrawn: Rs " << totalWithdrawal << "\n";
+    cout << "Total Tax Deducted: Rs " << totalTax << "\n";
+}
